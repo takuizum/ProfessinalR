@@ -1,0 +1,69 @@
+---
+title: "chapter6"
+author: "Takumi Shibuya"
+date: "2019/7/1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = FALSE)
+library(XRtools)
+library(tidyverse)
+```
+
+## オブジェクトの構造：型と属性
+```{r}
+class(1)
+typeof(1)
+```
+
+このようにRのオブジェクトは`class`（＝ベクトルクラス）と`type`（＝データ型）という異なる構造体を持つ。
+```{r}
+typeAndClass(mean, function(x) x+1, sin, `+`, `if`, `for`, `%>%`)
+```
+`closure`は一般的な関数の型の一種。これらはプリミティブ関数，つまりいくつかの基本的な関数であり，C言語で直接実装されているため，ユーザーが任意にその定義をいじることができない関数である。  
+`builtin`はプリミティブ関数に適用される型であり，関数呼び出し時に引数が評価される。一方`special`は評価されない。(`special`に属する関数オブジェクトたちは制御構文に用いられるものが多かったりするようだ。)
+
+関数の呼び出しの型は基本的に`language`であるが，通常は見えない。
+```{r}
+typeof(substitute(quote(sd)))
+```
+
+### 属性
+`attr()`で除くことができる構造体。とくに重要なのは`dim`である。
+
+```{r}
+matrix(1:4, 2, 2) %>% attr("dim")
+```
+基本的にRはSの伝統を受け継いでおり，NULLでない属性の集合を**属性リスト**と呼んでいる。これら属性リストはデータからは切り離されている。`attr`の`dim`が明示的に変化すると，暗黙のうちにxの型は変化する。
+```{r}
+x <- 1:9
+attr(x, "dim") <- c(3, 3)
+typeAndClass(x)
+```
+
+
+#### `attr`と`names`の決定的な違い
+似たようなRの関数に`names`がある。これはその名の通りオブジェクトの`names`属性を除くことのできる関数である。
+```{r}
+z <- quote(list(a = 1, b = "b"))
+attr(z, "names")
+names(z)
+attributes(z)
+```
+
+### オブジェクト管理
+
+ガレージコレクションのお話。
+
+### 参照オブジェクト：環境
+
+```{r}
+x <- list(aa = 1, bb = 3)
+x$aa
+x[["bb"]]
+x[["b"]]
+x$b # !?
+```
+なんど名前付きリストにおいて `$` で要素を抽出しようとすると完全一致でなくても取り出せてしまう。特にこれが`environment`だとやっかいになる（らしい）。
+
