@@ -1,0 +1,25 @@
+---
+title: "JuliaCall"
+author: "Takumi Shibuya"
+date: "2019/7/1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r setup}
+devtools::install_github("Non-Contradiction/JuliaCall")
+library(JuliaCall)
+```
+
+```{r}
+julia <- julia_setup(JULIA_HOME = "C:/Users/Default/AppData/Local/Julia-1.1.1/bin/")
+```
+```{r}
+julia_command("a = sqrt(2);"); julia_eval("a")
+```
+
+
